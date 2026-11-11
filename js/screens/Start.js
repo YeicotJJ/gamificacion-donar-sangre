@@ -6,7 +6,7 @@ export default {
     },
     template: `
         <section class="card c" style="
-            background-image: url('../src/images/fondo-menu.webp'); 
+            background-image: url('../src/images/fondo.webp'); 
             background-size: cover; 
             background-position: center; 
             background-repeat: no-repeat;

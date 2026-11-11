@@ -21,7 +21,7 @@ import Final from './screens/Final.js';
 const ASSETS_TO_PRELOAD = [
     './src/images/circular-progress.webp',
     './src/images/paper.webp',
-    './src/images/fondo-menu.webp',
+    './src/images/fondo.webp',
     './src/images/chico.webp',
     './src/images/chica.webp',
     './src/images/expediente.webp'
