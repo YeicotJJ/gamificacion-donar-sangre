@@ -19,12 +19,12 @@ import Final from './screens/Final.js';
 // 1. LISTA DE IMÁGENES A PRECARGAR
 // Agrega aquí cualquier imagen nueva que pongas en la carpeta src/images
 const ASSETS_TO_PRELOAD = [
-    './src/images/circular-progress.svg',
-    './src/images/paper.svg',
-    './src/images/fondo-menu.svg',
-    './src/images/chico.svg',
-    './src/images/chica.svg',
-    './src/images/expediente.svg'
+    './src/images/circular-progress.webp',
+    './src/images/paper.webp',
+    './src/images/fondo-menu.webp',
+    './src/images/chico.webp',
+    './src/images/chica.webp',
+    './src/images/expediente.webp'
 ];
 const SCREENS = [
     { c: Start }, { c: SelectCharacter }, { c: Intro }, { c: Situation }, { c: Stock },
@@ -81,7 +81,7 @@ const App = {
     template: `
         <!-- PANTALLA DE CARGA CON BARRA -->
         <div v-if="isLoading" class="loading-screen">
-            <img src="./src/images/circular-progress.svg" class="spinner" alt="">
+            <img src="./src/images/circular-progress.webp" class="spinner" alt="">
             <p>Cargando recursos... {{ progress }}%</p>
             
             <!-- Contenedor de la barra de progreso -->

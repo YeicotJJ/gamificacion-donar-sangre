@@ -29,7 +29,7 @@
 
 /* Estilos para el Gráfico SVG (Compare.js) */
 .tl { overflow-x: auto; margin: 6px 0; }
-.svg { width: 100%; min-width: 760px; height: auto; }
+.webp { width: 100%; min-width: 760px; height: auto; }
 .e { fill: none; stroke: var(--mut); stroke-width: 2.5; opacity: .45; stroke-linecap: round; stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw .9s forwards; }
 .e.best { stroke: var(--ok); opacity: 1; stroke-width: 5; }
 .e.me { stroke: var(--red); opacity: 1; stroke-width: 5; }

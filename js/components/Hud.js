@@ -16,7 +16,7 @@ export default {
         <!-- IMAGEN FLOTANTE EXPEDIENTE -->
         <!-- v-if="G.i >= 4" hace que solo aparezca desde la Situación 1 (Stock hospitalario) en adelante -->
         <button v-if="G.i >= 4" class="btn-expediente" @click="G.showExpediente = true" title="Abrir Expediente">
-            <img src="./src/images/expediente.svg" alt="Expediente">
+            <img src="./src/images/expediente.webp" alt="Expediente">
         </button>
     `
 };

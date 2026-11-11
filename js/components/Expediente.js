@@ -25,7 +25,7 @@ export default {
                 
                 <!-- Cabecera del expediente -->
                 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-                    <img v-if="G.playerAvatar" :src="'./src/images/' + (G.playerAvatar === 'male' ? 'chico' : 'chica') + '.svg'" style="width: 65px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));">
+                    <img v-if="G.playerAvatar" :src="'./src/images/' + (G.playerAvatar === 'male' ? 'chico' : 'chica') + '.webp'" style="width: 65px; height: 65px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));">
                     <div>
                         <h2 style="margin: 0; color: var(--navy);">Expediente Informátivo</h2>
                         <div style="font-size: 0.95em; color: var(--mut); margin-top: 4px;">

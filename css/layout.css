@@ -31,7 +31,7 @@
 /* Pantalla del Papel (Intro) */
 .paper-container {
   position: relative; width: 100%; max-width: 900px; margin: 10px auto;
-  padding: 4% 18% 10% 15%; background-image: url('../src/images/paper.svg');
+  padding: 4% 18% 10% 15%; background-image: url('../src/images/paper.webp');
   background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
   color: #1a1a1a; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
 }

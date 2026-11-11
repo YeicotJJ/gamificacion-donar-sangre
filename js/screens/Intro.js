@@ -16,7 +16,7 @@ export default {
             const img = new Image();
             img.onload = () => { bgLoaded.value = true; };
             img.onerror = () => { bgLoaded.value = true; }; // Si falla, mostramos el texto igual
-            img.src = './src/images/paper.svg';
+            img.src = './src/images/paper.webp';
         });
 
         return { openIndex, toggleMyth, PROCESS, MYTHS, next, bgLoaded };

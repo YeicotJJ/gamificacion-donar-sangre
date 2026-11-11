@@ -16,8 +16,8 @@ export default {
             
             <!-- Foto y lazo del personaje -->
             <div class="player-display">
-                <!-- Se evalúa si es 'male' carga chico.svg, si no, chica.svg -->
-                <img :src="'./src/images/' + (G.playerAvatar === 'male' ? 'chico' : 'chica') + '.svg'" alt="Avatar">
+                <!-- Se evalúa si es 'male' carga chico.webp, si no, chica.webp -->
+                <img :src="'./src/images/' + (G.playerAvatar === 'male' ? 'chico' : 'chica') + '.webp'" alt="Avatar">
                 <div class="player-ribbon">{{ G.playerName }}</div>
             </div>
 

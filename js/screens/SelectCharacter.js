@@ -34,12 +34,12 @@ export default {
             <div class="avatar-grid">
                 <!-- Tarjeta Mujer -->
                 <div class="avatar-card" :class="{ selected: avatar === 'female' }" @click="selectAvatar('female')">
-                    <img src="./src/images/chica.svg" alt="Mujer">
+                    <img src="./src/images/chica.webp" alt="Mujer">
                     <div>Doctora</div>
                 </div>
                 <!-- Tarjeta Hombre -->
                 <div class="avatar-card" :class="{ selected: avatar === 'male' }" @click="selectAvatar('male')">
-                    <img src="./src/images/chico.svg" alt="Hombre">
+                    <img src="./src/images/chico.webp" alt="Hombre">
                     <div>Doctor</div>
                 </div>
             </div>
