@@ -1,0 +1,134 @@
+/* css/animations.css */
+
+/* Transiciones de pantallas Vue */
+.slide-enter-active, .slide-leave-active {
+  transition: opacity .45s ease, transform .45s cubic-bezier(.2, .8, .2, 1);
+}
+.slide-enter-from { opacity: 0; transform: translateX(70px); }
+.slide-leave-to { opacity: 0; transform: translateX(-70px); }
+.slide-leave-active { pointer-events: none; }
+
+.pop-enter-active, .pop-leave-active { transition: all .35s; }
+.pop-enter-from, .pop-leave-to { opacity: 0; transform: translate(-50%, 20px); }
+
+/* Animación del acordeón (Mitos) */
+.myth-accordion { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease-out; }
+.myth-accordion.is-open { grid-template-rows: 1fr; }
+.myth-accordion-content { overflow: hidden; }
+.myth-arrow { font-size: 1.2em; color: #c4202f; transition: transform 0.35s ease-out; }
+.myth-arrow.is-open { transform: rotate(180deg); }
+
+/* Pantalla de Carga y Spinner */
+.loading-screen {
+  position: absolute; inset: 0; background: var(--bg);
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; z-index: 9999; color: var(--navy); font-weight: 700;
+}
+.spinner { width: 70px; height: 70px; margin-bottom: 20px; animation: spin 1.2s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Estilos para el Gráfico SVG (Compare.js) */
+.tl { overflow-x: auto; margin: 6px 0; }
+.svg { width: 100%; min-width: 760px; height: auto; }
+.e { fill: none; stroke: var(--mut); stroke-width: 2.5; opacity: .45; stroke-linecap: round; stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw .9s forwards; }
+.e.best { stroke: var(--ok); opacity: 1; stroke-width: 5; }
+.e.me { stroke: var(--red); opacity: 1; stroke-width: 5; }
+.nd { fill: var(--card); stroke: var(--mut); stroke-width: 2.5; }
+.nd.best { stroke: var(--ok); }
+.nd.me { stroke: var(--red); }
+.lb { font-size: 12px; fill: var(--ink); paint-order: stroke; stroke: var(--card); stroke-width: 4px; }
+.h { font-size: 13px; font-weight: 700; fill: var(--mut); }
+.pill { fill: var(--blue); }
+.pill.best { fill: var(--ok); }
+.pill.me { fill: var(--red); }
+.pt { font-size: 13px; font-weight: 700; fill: var(--ink); }
+.pill.best+.pt, .pill.me+.pt { fill: #fff; }
+.lb2 { font-size: 12px; font-weight: 700; }
+.lb2.g { fill: var(--ok); }
+.lb2.r { fill: var(--red); }
+.nd, .lb, .lf { opacity: 0; animation: fade .4s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fade { to { opacity: 1; } }
+
+/* =========================================
+   EFECTOS DE JUICING (PULIDO VISUAL)
+   ========================================= */
+
+/* 1. Botones elásticos (Squishy buttons) */
+.btn, .opt {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s, border-color 0.2s;
+}
+.btn:active, .opt:active {
+    transform: scale(0.94) translateY(2px);
+}
+
+/* 2. Temblor de pantalla (Screen Shake) */
+.juicing-shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+    40%, 60% { transform: translate3d(8px, 0, 0); }
+}
+
+/* 3. Destellos de fondo (Flashes) */
+.juicing-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+.juicing-flash.ok {
+    background: rgba(47, 158, 87, 0.25); /* Verde */
+    opacity: 1;
+}
+.juicing-flash.bad {
+    background: rgba(224, 138, 0, 0.35); /* Naranja/Rojo */
+    opacity: 1;
+}
+
+/* 4. Textos Flotantes (+ Puntos) */
+.floating-text {
+    position: fixed;
+    z-index: 9999;
+    font-weight: 900;
+    font-size: 32px;
+    pointer-events: none;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    animation: floatUp 1s ease-out forwards;
+    transform: translate(-50%, -50%);
+}
+@keyframes floatUp {
+    0% { opacity: 0; transform: translate(-50%, -30%) scale(0.5); }
+    15% { opacity: 1; transform: translate(-50%, -80%) scale(1.3); }
+    30% { transform: translate(-50%, -100%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -200%) scale(1); }
+}
+
+/* =========================================
+   BARRA DE CARGA PROGRESIVA
+   ========================================= */
+.loading-bar-container {
+    width: 80%;
+    max-width: 280px;
+    height: 14px;
+    background: var(--blue);
+    border-radius: 10px;
+    margin-top: 15px;
+    overflow: hidden;
+    border: 2px solid var(--navy);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.loading-bar-fill {
+    height: 100%;
+    background: var(--red);
+    width: 0%;
+    border-radius: 6px;
+    /* La transición hace que el salto del porcentaje se vea fluido (juicing) */
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); 
+}
