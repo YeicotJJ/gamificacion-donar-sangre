@@ -29,7 +29,7 @@ export default {
                     <div>
                         <h2 style="margin: 0; color: var(--navy);">Expediente Informátivo</h2>
                         <div style="font-size: 0.95em; color: var(--mut); margin-top: 4px;">
-                            <b>{{ G.playerName || 'Guardia' }}</b> · ⭐ {{G.score}} pts
+                            <b>{{ G.playerName || 'Guardia' }}</b> · ⭐ {{ G.levelStars.filter(Boolean).length }} / {{ G.levelStars.length }} estrellas
                         </div>
                     </div>
                 </div>

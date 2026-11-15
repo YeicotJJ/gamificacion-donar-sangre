@@ -13,6 +13,29 @@
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Variables del sistema tipográfico accesible y escalable */
+  --text-scale: 1;
+  --desktop-text-boost: 1;
+  --app-font-scale: calc(var(--text-scale, 1) * var(--desktop-text-boost, 1));
+}
+
+/* 5 Tamaños de textos predefinidos (seleccionables en Opciones) */
+:root[data-text-size="1"], .text-size-1 { --text-scale: 0.85; } /* 1. Muy pequeño (-15%) */
+:root[data-text-size="2"], .text-size-2 { --text-scale: 0.92; } /* 2. Pequeño (-8%) */
+:root[data-text-size="3"], .text-size-3 { --text-scale: 1.00; } /* 3. Normal (Estándar) */
+:root[data-text-size="4"], .text-size-4 { --text-scale: 1.15; } /* 4. Grande (+15%) */
+:root[data-text-size="5"], .text-size-5 { --text-scale: 1.30; } /* 5. Muy grande (+30%) */
+
+/* Subir la letra más grande cuando está en modo escritorio (PC / Pantalla horizontal) */
+@media (min-width: 769px) and (orientation: landscape), (min-width: 1025px) {
+  :root:not([data-mode="mobile"]) {
+    --desktop-text-boost: 1.25;
+  }
+}
+
+:root[data-mode="desktop"] {
+  --desktop-text-boost: 1.25;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,8 +64,9 @@ body {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  font-size: calc(16px * var(--app-font-scale, 1));
 }
 
-h1 { font-size: clamp(40px, 8vw, 72px); line-height: 1.05; margin: 8px 0; }
-h2 { font-size: clamp(24px, 4vw, 36px); margin: 0 0 12px; }
-p { line-height: 1.5; margin: 10px 0; }
+h1 { font-size: calc(clamp(40px, 8vw, 72px) * var(--app-font-scale, 1)); line-height: 1.05; margin: 8px 0; }
+h2 { font-size: calc(clamp(24px, 4vw, 36px) * var(--app-font-scale, 1)); margin: 0 0 12px; }
+p { line-height: 1.55; margin: 10px 0; font-size: calc(1rem * var(--app-font-scale, 1)); }

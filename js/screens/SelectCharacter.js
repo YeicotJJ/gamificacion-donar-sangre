@@ -3,19 +3,16 @@ import { G, next } from '../store.js';
 
 export default {
     setup() {
-        const name = ref(G.playerName);
+        const name   = ref(G.playerName);
         const avatar = ref(G.playerAvatar);
 
-        const selectAvatar = (type) => {
-            avatar.value = type;
-        };
+        const selectAvatar = (type) => { avatar.value = type; };
 
-        // El botón solo se activa si hay nombre y avatar seleccionado
         const canContinue = computed(() => name.value.trim().length > 0 && avatar.value !== null);
 
         const saveAndNext = () => {
             if (canContinue.value) {
-                G.playerName = name.value.trim();
+                G.playerName   = name.value.trim();
                 G.playerAvatar = avatar.value;
                 next();
             }
@@ -25,30 +22,54 @@ export default {
     },
     template: `
         <section class="card">
-            <span class="tag">Perfil</span>
-            <h2>Identifícate</h2>
-            <p class="mut">Ingresa tu nombre y elige tu avatar para comenzar tu guardia.</p>
-            
-            <input type="text" v-model="name" class="name-input" placeholder="Tu nombre..." maxlength="15">
-            
+            <span class="tag">¡Hola!</span>
+            <h2>¡Bienvenido!</h2>
+            <p style="line-height:1.6; margin-bottom:20px;">
+                ¡Qué bueno tenerte por aquí! Para empezar esta aventura sobre la donación de sangre
+                en Piura, escribe tu nombre y elige tu avatar favorito.
+                <br><br>
+                ¡Cada nivel superado te dará una estrella ⭐ y al final te espera una gran sorpresa!
+            </p>
+
+            <input
+                type="text"
+                v-model="name"
+                class="name-input"
+                placeholder="Tu nombre..."
+                maxlength="15"
+            >
+
             <div class="avatar-grid">
-                <!-- Tarjeta Mujer -->
-                <div class="avatar-card" :class="{ selected: avatar === 'female' }" @click="selectAvatar('female')">
+                <!-- Familiar femenina -->
+                <div
+                    class="avatar-card"
+                    :class="{ selected: avatar === 'female' }"
+                    @click="selectAvatar('female')"
+                >
                     <img src="./src/images/chica.webp" alt="Mujer">
-                    <div>Doctora</div>
+                    <div>Familiar ♀</div>
                 </div>
-                <!-- Tarjeta Hombre -->
-                <div class="avatar-card" :class="{ selected: avatar === 'male' }" @click="selectAvatar('male')">
+                <!-- Familiar masculino -->
+                <div
+                    class="avatar-card"
+                    :class="{ selected: avatar === 'male' }"
+                    @click="selectAvatar('male')"
+                >
                     <img src="./src/images/chico.webp" alt="Hombre">
-                    <div>Doctor</div>
+                    <div>Familiar ♂</div>
                 </div>
             </div>
 
-            <!-- Botón pegado abajo como en Intro -->
-            <button class="btn red" 
-                :style="{ opacity: canContinue ? 1 : 0.5, pointerEvents: canContinue ? 'auto' : 'none', position: 'sticky', bottom: '24px', zIndex: 10, marginTop: 'auto' }" 
-                @click="saveAndNext()">
-                Guardar perfil →
+            <button
+                class="btn red"
+                :style="{
+                    opacity: canContinue ? 1 : 0.5,
+                    pointerEvents: canContinue ? 'auto' : 'none',
+                    position: 'sticky', bottom: '24px', zIndex: 10, marginTop: 'auto'
+                }"
+                @click="saveAndNext()"
+            >
+                ¡Comenzar la aventura! →
             </button>
         </section>
     `

@@ -23,9 +23,6 @@ export default {
             <span class="tag">Resultado de simulación</span>
             <div class="stars">{{'★'.repeat(h)}}{{'☆'.repeat(n-h)}}</div>
             
-            <!-- Mostramos el puntaje final basado en respuestas y rachas -->
-            <div class="big">{{G.score}} pts</div>
-            
             <p>Respuesta óptima en <b>{{h}} de {{n}}</b> decisiones</p>
             <div>
                 <span class="badge" v-for="b in G.badges">🏅 {{b}}</span>

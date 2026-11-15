@@ -1,74 +1,117 @@
-import { ref, onMounted } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.esm-browser.prod.js';
-import { PROCESS, MYTHS } from '../data.js';
-import { next } from '../store.js';
+import { ref, computed, onMounted, onUnmounted } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.esm-browser.prod.js';
+import { G, formatText } from '../store.js';
+import { resolveBackground } from '../utils/backgrounds.js';
+import { playSfx } from '../utils/audio.js';
+
+const INTRO_SLIDES = [
+    {
+        bg: './src/images/levels/bg_nivel1_situacion_clean.webp',
+        bgVertical: './src/images/levels/bg_nivel1_situacion_clean_v.webp',
+        bgMale: null,
+        bgMaleVertical: null,
+        bgFemale: null,
+        bgFemaleVertical:null,
+        text: 'Son las 00:17 en el Hospital Regional. Ingresa un paciente en estado crítico por un accidente múltiple en la carretera. Necesita transfusiones de sangre urgentes de grupo O negativo para sobrevivir a la cirugía.'
+    },
+    {
+        bg: './src/images/levels/bg_nivel1_conversacion_clean.webp',
+        bgVertical: './src/images/levels/bg_nivel1_conversacion_clean_v.webp',
+        bgMale: null,
+        bgMaleVertical: null,
+        bgFemale: null,
+        bgFemaleVertical: null,
+        text: 'Al consultar con el Banco de Sangre, la noticia es alarmante: no hay unidades de reserva disponibles. En el Perú, solo entre 4 y 5 de cada 1,000 personas aptas donan de manera voluntaria, por lo que reponer la sangre es una lucha contrarreloj.'
+    },
+    {
+        bg:null,
+        bgVertical: null,
+        bgMale: './src/images/levels/bg_nivel1_eleccion_chico.webp',
+        bgMaleVertical: './src/images/levels/bg_nivel1_eleccion_chico_v.webp',
+        bgFemale: './src/images/levels/bg_nivel1_eleccion_chica.webp',
+        bgFemaleVertical: './src/images/levels/bg_nivel1_eleccion_chica_v.webp',
+        text: '¡{name}, tienes menos de dos horas para resolver la crisis y conseguir un donante seguro! Cada decisión que tomes puede salvar una vida... o ponerla en peligro. ¿Estás {listo/lista} para tomar las decisiones correctas?'
+    }
+];
 
 export default {
     setup() {
-        const openIndex = ref(null);
-        const bgLoaded = ref(false); // Estado para controlar la carga del fondo
-        
-        const toggleMyth = (index) => {
-            openIndex.value = openIndex.value === index ? null : index;
+        const slideIndex = ref(0);
+
+        // Detección reactiva de orientación vertical (modo celular)
+        const isPortrait = ref(
+            window.matchMedia('(orientation: portrait)').matches || (window.innerWidth < window.innerHeight)
+        );
+
+        const onResize = () => {
+            isPortrait.value = window.matchMedia('(orientation: portrait)').matches || (window.innerWidth < window.innerHeight);
         };
 
         onMounted(() => {
-            // Verificamos que el fondo se haya descargado
-            const img = new Image();
-            img.onload = () => { bgLoaded.value = true; };
-            img.onerror = () => { bgLoaded.value = true; }; // Si falla, mostramos el texto igual
-            img.src = './src/images/paper.webp';
+            window.addEventListener('resize', onResize);
+            window.addEventListener('orientationchange', onResize);
         });
 
-        return { openIndex, toggleMyth, PROCESS, MYTHS, next, bgLoaded };
+        onUnmounted(() => {
+            window.removeEventListener('resize', onResize);
+            window.removeEventListener('orientationchange', onResize);
+        });
+
+        const currentSlide = computed(() => INTRO_SLIDES[slideIndex.value]);
+
+        // Selector dinámico WebP según orientación y avatar seleccionado
+        const currentBg = computed(() => {
+            return resolveBackground(currentSlide.value, G.playerAvatar, isPortrait.value);
+        });
+
+        const isLast = computed(() => slideIndex.value >= INTRO_SLIDES.length - 1);
+
+        const nextSlide = () => {
+            playSfx('next');
+            if (slideIndex.value < INTRO_SLIDES.length - 1) {
+                slideIndex.value++;
+            } else {
+                G.screen = 'levelSelect';
+            }
+        };
+
+        const goToMap = () => {
+            playSfx('click');
+            G.screen = 'levelSelect';
+        };
+
+        return {
+            slideIndex, currentSlide, currentBg, isLast, isPortrait, G, formatText,
+            nextSlide, goToMap
+        };
     },
     template: `
-        <section class="card">
-            <span class="tag">Antes de empezar</span>
-            
-            <div class="paper-container">
-                <!-- El texto se mantiene transparente hasta que bgLoaded sea true -->
-                <div class="paper-content" :style="{ opacity: bgLoaded ? 1 : 0, transition: 'opacity 0.6s ease-in-out' }">
-                    
-                    <!-- MENÚ 1: PROCESOS EN FILAS -->
-                    <div>
-                        <h2 class="paper-title">Proceso</h2>
-                        <div class="paper-row" v-for="(s,i) in PROCESS">
-                            <strong>{{i+1}}. {{s[0]}}</strong>
-                            <div style="font-size: 0.85em; color: #444; margin-top: 4px;">{{s[1]}}</div>
-                        </div>
-                        <p style="font-size: 0.8em; font-weight: 700; color: #c4202f; margin-top: 14px;">
-- Requisitos base: 18 a 65 años, buena salud, sin enfermedades transmisibles.
-                        </p>
-                    </div>
-                    
-                    <!-- MENÚ 2: MITOS EN FILAS DESPLEGABLES ANIMADAS -->
-                    <div>
-                        <h2 class="paper-title">Mitos</h2>
-                        <div class="paper-row" v-for="(m,i) in MYTHS" @click="toggleMyth(i)" style="cursor: pointer;">
-                            
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <strong>{{m[0]}}</strong>
-                                <span class="myth-arrow" :class="{ 'is-open': openIndex === i }">▼</span>
-                            </div>
-                            
-                            <div class="myth-accordion" :class="{ 'is-open': openIndex === i }">
-                                <div class="myth-accordion-content">
-                                    <div style="margin-top: 8px; color: #2f9e57; font-weight: 700; font-size: 0.9em; padding-bottom: 6px;">
-                                        ✔ {{m[1]}}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
+        <section class="vn-screen" :style="{ backgroundImage: 'url(' + currentBg + ')' }">
 
+            <!-- ══ BADGE SUPERIOR IZQUIERDO: 'INTRODUCCIÓN' ══ -->
+            <div class="vn-top-badge">
+                Introducción
+            </div>
+
+            <!-- ══ HUD SUPERIOR DISCRETO (SALTAR) ══ -->
+            <div class="vn-top-hud">
+                <button class="vn-hud-btn" @click="goToMap()" title="Saltar al mapa de niveles">
+                    <span>Saltar</span>
+                    <span>⏩</span>
+                </button>
+            </div>
+
+            <!-- ══ PANEL ROJO INFERIOR (ESTILO SITUACIÓN DEL NIVEL) ══ -->
+            <div class="vn-panel">
+                <div class="vn-situation-box">
+                    <p class="vn-situation-text">{{ formatText(currentSlide.text) }}</p>
+                    <div class="vn-situation-actions">
+                        <button class="vn-btn-continue" @click="nextSlide()">
+                            {{ isLast ? '¡Ir al mapa! 🗺️' : 'Continuar' }}
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <!-- El botón también aparece con fade-in junto con las letras -->
-            <button class="btn red" 
-                :style="{ opacity: bgLoaded ? 1 : 0, pointerEvents: bgLoaded ? 'auto' : 'none', transition: 'opacity 0.6s ease-in-out', position: 'sticky', bottom: '24px', zIndex: 10, marginTop: 'auto', boxShadow: '0 8px 20px rgba(0,0,0,0.3)' }" 
-                @click="next()">Estoy listo, ir al hospital →</button>
+
         </section>
     `
 };

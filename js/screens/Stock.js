@@ -1,8 +1,11 @@
-import { next } from '../store.js';
+import { G } from '../store.js';
 
 export default {
     setup() {
-        return { next };
+        const goToLevelSelect = () => {
+            G.screen = 'levelSelect';
+        };
+        return { goToLevelSelect };
     },
     template: `
         <section class="card c">
@@ -11,7 +14,7 @@ export default {
             <div class="drop">🩸</div>
             <div class="big">Stock: 0</div>
             <div class="note"><b>Dato:</b> menos del 1.5% de la población en Perú dona sangre de forma voluntaria.</div>
-            <button class="btn" @click="next()">Continuar →</button>
+            <button class="btn" @click="goToLevelSelect()">Comenzar niveles →</button>
         </section>
     `
 };

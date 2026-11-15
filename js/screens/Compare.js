@@ -66,7 +66,7 @@ export default {
                     </g>
                 </svg>
             </div>
-            <button class="btn red" @click="next()">Ver mi puntaje →</button>
+            <button class="btn red" @click="next()">Ver resultados →</button>
         </section>
     `
 };

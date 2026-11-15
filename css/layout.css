@@ -10,11 +10,16 @@
 .bar i.on { background: var(--red); }
 
 .hud {
-  position: absolute; top: 30px; right: max(20px, 4vw); z-index: 5;
-  display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
-  font-size: 13px; font-weight: 700;
+  position: absolute; top: max(16px, env(safe-area-inset-top, 16px));
+  left: 0; right: 0; width: 100%; z-index: 15;
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center;
+  box-sizing: border-box;
+  padding: 0 clamp(12px, 3.5vw, 36px);
+  pointer-events: none;
+  font-size: clamp(12px, 1.2vw, 14px); font-weight: 700;
 }
-.hud span {
+.hud span, .hud button, .hud > * {
+  pointer-events: auto;
   background: var(--card); border: 1px solid var(--blue);
   border-radius: 20px; padding: 4px 10px; box-shadow: 0 2px 8px #0001;
 }
@@ -63,4 +68,21 @@
   background: var(--red); color: white; padding: 4px 18px; border-radius: 12px;
   font-size: 13px; font-weight: 800; z-index: 3; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   text-transform: uppercase; letter-spacing: 1px;
+}
+
+@media (min-width: 769px) and (orientation: landscape), (min-width: 1025px) {
+  :root:not([data-mode="mobile"]) .hud {
+    font-size: calc(clamp(13px, 1.2vw, 15px) * var(--text-scale, 1));
+  }
+  :root:not([data-mode="mobile"]) .avatar-card div {
+    font-size: calc(16.5px * var(--text-scale, 1));
+    font-weight: 700;
+  }
+}
+:root[data-mode="desktop"] .hud {
+  font-size: calc(clamp(13px, 1.2vw, 15px) * var(--text-scale, 1));
+}
+:root[data-mode="desktop"] .avatar-card div {
+  font-size: calc(16.5px * var(--text-scale, 1));
+  font-weight: 700;
 }

@@ -1,116 +1,155 @@
-import { createApp, computed, ref, onMounted } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.esm-browser.prod.js';
-import { G, next } from './store.js';
-import { CASES } from './data.js';
+import { createApp, computed, ref, onMounted, watch } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.esm-browser.prod.js';
+import { G, next, applyTextSize, updateDesktopMode } from './store.js';
 
-// Importar Componentes Modulares
-import Hud from './components/Hud.js';
-import Expediente from './components/Expediente.js';
-import Start from './screens/Start.js';
+// Pantallas
+import Start           from './screens/Start.js';
 import SelectCharacter from './screens/SelectCharacter.js';
-import Intro from './screens/Intro.js';
-import Situation from './screens/Situation.js';
-import Stock from './screens/Stock.js';
-import Case from './screens/Case.js';
-import Feedback from './screens/Feedback.js';
-import Compare from './screens/Compare.js';
-import Result from './screens/Result.js';
-import Final from './screens/Final.js';
+import Intro           from './screens/Intro.js';
+import LevelSelect     from './screens/LevelSelect.js';
+import LevelPlay       from './screens/LevelPlay.js';
+import LevelResult     from './screens/LevelResult.js';
+import FinalScreen     from './screens/FinalScreen.js';
 
-// 1. LISTA DE IMÁGENES A PRECARGAR
-// Agrega aquí cualquier imagen nueva que pongas en la carpeta src/images
-const ASSETS_TO_PRELOAD = [
+// Componentes globales
+import SettingsModal   from './components/SettingsModal.js';
+import { initAudio }   from './utils/audio.js';
+
+// Imágenes a precargar (todas en formato .webp)
+const ASSETS = [
     './src/images/circular-progress.webp',
-    './src/images/paper.webp',
     './src/images/fondo.webp',
+    './src/images/fondo_v.webp',
+    './src/images/fondo_chico.webp',
+    './src/images/fondo_chico_v.webp',
+    './src/images/fondo_chica.webp',
+    './src/images/fondo_chica_v.webp',
     './src/images/chico.webp',
     './src/images/chica.webp',
-    './src/images/expediente.webp'
+    './src/images/levels/bg_nivel1_situacion_clean.webp',
+    './src/images/levels/bg_nivel1_situacion_clean_v.webp',
+    './src/images/levels/bg_nivel1_situacion_chico.webp',
+    './src/images/levels/bg_nivel1_situacion_chico_v.webp',
+    './src/images/levels/bg_nivel1_situacion_chica.webp',
+    './src/images/levels/bg_nivel1_situacion_chica_v.webp',
+    './src/images/levels/bg_nivel1_conversacion_clean.webp',
+    './src/images/levels/bg_nivel1_conversacion_clean_v.webp',
+    './src/images/levels/bg_nivel1_conversacion_chico.webp',
+    './src/images/levels/bg_nivel1_conversacion_chico_v.webp',
+    './src/images/levels/bg_nivel1_conversacion_chica.webp',
+    './src/images/levels/bg_nivel1_conversacion_chica_v.webp',
+    './src/images/levels/bg_nivel1_eleccion_clean.webp',
+    './src/images/levels/bg_nivel1_eleccion_clean_v.webp',
+    './src/images/levels/bg_nivel1_eleccion_chico.webp',
+    './src/images/levels/bg_nivel1_eleccion_chico_v.webp',
+    './src/images/levels/bg_nivel1_eleccion_chica.webp',
+    './src/images/levels/bg_nivel1_eleccion_chica_v.webp',
+    './src/images/levels/marcos_portrait_talk.webp',
+    './src/images/levels/marcos_portrait_doubt.webp',
 ];
-const SCREENS = [
-    { c: Start }, { c: SelectCharacter }, { c: Intro }, { c: Situation }, { c: Stock },
-    ...CASES.flatMap((_, ci) => [{ c: Case, p: { ci } }, { c: Feedback, p: { ci } }]),
-    { c: Compare }, { c: Result }, { c: Final }
+
+// Pantallas lineales de intro (controladas por G.i)
+// 0 → Start  |  1 → SelectCharacter  |  2 → Intro  → LevelSelect (via G.screen)
+const INTRO = [
+    { c: Start          },
+    { c: SelectCharacter },
+    { c: Intro          },
 ];
 
 const App = {
-    components: { Hud, Expediente },
     setup() {
         const isLoading = ref(true);
-        const progress = ref(0); // Nueva variable para el porcentaje
+        const progress  = ref(0);
 
         onMounted(() => {
-            const total = ASSETS_TO_PRELOAD.length;
+            applyTextSize(G.textSize);
+            updateDesktopMode();
+
+            const total = ASSETS.length;
             let loaded = 0;
-
-            if (total === 0) {
-                isLoading.value = false;
-                return;
-            }
-
-            // Cargamos cada imagen y actualizamos la barra
-            ASSETS_TO_PRELOAD.forEach(url => {
+            if (total === 0) { isLoading.value = false; return; }
+            ASSETS.forEach(url => {
                 const img = new Image();
-                
-                // Función que avanza el progreso cuando la imagen carga (o falla)
-                const advanceProgress = () => {
+                const advance = () => {
                     loaded++;
                     progress.value = Math.floor((loaded / total) * 100);
-                    
-                    // Si ya cargaron todas, esperamos un instante y quitamos la pantalla
-                    if (loaded === total) {
-                        setTimeout(() => {
-                            isLoading.value = false;
-                        }, 450);
-                    }
+                    if (loaded === total) setTimeout(() => { isLoading.value = false; }, 400);
                 };
-
-                img.onload = advanceProgress;
-                img.onerror = advanceProgress;
+                img.onload  = advance;
+                img.onerror = advance;
                 img.src = url;
             });
         });
 
-        return { 
-            G, 
-            SCREENS, 
-            cur: computed(() => SCREENS[G.i]),
-            isLoading,
-            progress
-        };
+        watch(() => G.textSize, (newSize) => {
+            applyTextSize(newSize);
+        });
+
+        watch(() => G.orientationMode, () => {
+            updateDesktopMode();
+        });
+
+        // Router
+        const curComponent = computed(() => {
+            const s = G.screen;
+            if (s === 'levelSelect') return { c: LevelSelect, p: {} };
+            if (s === 'levelPlay')   return { c: LevelPlay,   p: {} };
+            if (s === 'levelResult') return { c: LevelResult,  p: {} };
+            if (s === 'final')       return { c: FinalScreen,  p: {} };
+            // Intro lineal
+            if (G.i < INTRO.length) return { c: INTRO[G.i].c, p: {} };
+            return { c: LevelSelect, p: {} };
+        });
+
+        return { G, curComponent, isLoading, progress };
+    },
+    components: {
+        SettingsModal
     },
     template: `
-        <!-- PANTALLA DE CARGA CON BARRA -->
+        <!-- CARGA -->
         <div v-if="isLoading" class="loading-screen">
             <img src="./src/images/circular-progress.webp" class="spinner" alt="">
-            <p>Cargando recursos... {{ progress }}%</p>
-            
-            <!-- Contenedor de la barra de progreso -->
+            <p>Cargando... {{ progress }}%</p>
             <div class="loading-bar-container">
                 <div class="loading-bar-fill" :style="{ width: progress + '%' }"></div>
             </div>
         </div>
 
-        <!-- APP PRINCIPAL -->
-        <div v-else :class="{ 'juicing-shake': G.shake }" :style="{ pointerEvents: G.flash ? 'none' : 'auto' }">
+        <!-- APP -->
+        <div v-else
+            :class="{ 'juicing-shake': G.shake }"
+            :style="{ pointerEvents: G.flash ? 'none' : 'auto' }"
+        >
             <div class="juicing-flash" :class="G.flash"></div>
-            
-            <div v-for="f in G.floaters" :key="f.id" class="floating-text" :style="{ left: f.x + 'px', top: f.y + 'px', color: f.color }">
-                {{ f.text }}
-            </div>
 
-            <div class="bar">
-                <i v-for="n in SCREENS.length" :class="{on: n - 1 <= G.i}"></i>
-            </div>
-            
-            <Hud v-if="G.i > 0"/>
-            <Expediente v-if="G.showExpediente" />
-            
+            <div
+                v-for="f in G.floaters" :key="f.id"
+                class="floating-text"
+                :style="{ left: f.x + 'px', top: f.y + 'px', color: f.color }"
+            >{{ f.text }}</div>
+
+            <!-- BOTÓN FLOTANTE GLOBAL DE OPCIONES (accesible en todo momento) -->
+            <button
+                class="global-settings-trigger"
+                @click="G.showSettingsModal = true"
+                title="Opciones y sonido"
+            >
+                ⚙️
+            </button>
+
             <Transition name="slide">
-                <component :is="cur.c" v-bind="cur.p" :key="G.i" />
+                <component
+                    :is="curComponent.c"
+                    v-bind="curComponent.p"
+                    :key="G.screen + '-' + G.i + '-' + G.currentLevel + '-' + G.currentLevelStep"
+                />
             </Transition>
-            
+
+            <!-- MODAL GLOBAL DE OPCIONES -->
+            <SettingsModal v-if="G.showSettingsModal" />
+
             <Transition name="pop">
-                <div class="toast" v-if="G.toast">🏅 Insignia: {{G.toast}}</div>
+                <div class="toast" v-if="G.toast">⭐ {{ G.toast }}</div>
             </Transition>
         </div>
     `
@@ -118,4 +157,4 @@ const App = {
 
 const app = createApp(App);
 Object.assign(app.config.globalProperties, { G, next });
-app.mount("#app");
+app.mount('#app');
