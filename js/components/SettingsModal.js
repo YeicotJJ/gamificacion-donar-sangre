@@ -3,6 +3,13 @@ import { ref, computed } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21
 import { G, restart, saveSettings, TEXT_SIZES, applyTextSize, updateDesktopMode } from '../store.js';
 import { playSfx, updateBgmVolume } from '../utils/audio.js';
 
+// Opciones de animación de texto
+export const TEXT_ANIMATIONS = [
+    { id: 'typewriter', label: 'Máquina de escribir', icon: '⌨️', desc: 'Los caracteres aparecen uno a uno' },
+    { id: 'fade',       label: 'Aparición suave',     icon: '✨', desc: 'El texto aparece con fundido' },
+    { id: 'none',       label: 'Sin animación',        icon: '⚡', desc: 'El texto aparece al instante' },
+];
+
 export default {
     setup() {
         const showConfirmReset = ref(false);
@@ -24,6 +31,12 @@ export default {
             playSfx('click');
             G.textSize = sizeId;
             applyTextSize(sizeId);
+            saveSettings();
+        };
+
+        const setTextAnimation = (animId) => {
+            playSfx('click');
+            G.textAnimation = animId;
             saveSettings();
         };
 
@@ -73,6 +86,7 @@ export default {
         return {
             G, showConfirmReset,
             textSizes: TEXT_SIZES, currentTextSizeLabel, setTextSize,
+            textAnimations: TEXT_ANIMATIONS, setTextAnimation,
             close, setOrientation,
             onMusicInput, toggleMusic,
             onSfxInput, toggleSfx, testSfx,
@@ -156,7 +170,30 @@ export default {
                     </div>
                 </div>
 
-                <!-- ── 3. VOLUMEN DE MÚSICA ── -->
+                <!-- ── 3. ANIMACIÓN DE TEXTO ── -->
+                <div class="settings-section">
+                    <label class="settings-label">
+                        <strong>🎬 Animación de texto:</strong>
+                        <span class="settings-subtext">Elige cómo aparece el texto en los diálogos y situaciones</span>
+                    </label>
+
+                    <div class="settings-anim-pills">
+                        <button
+                            v-for="anim in textAnimations"
+                            :key="anim.id"
+                            class="settings-anim-btn"
+                            :class="{ active: G.textAnimation === anim.id }"
+                            @click="setTextAnimation(anim.id)"
+                            :title="anim.desc"
+                        >
+                            <span class="anim-btn-icon">{{ anim.icon }}</span>
+                            <span class="anim-btn-label">{{ anim.label }}</span>
+                            <span class="anim-btn-desc">{{ anim.desc }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ── 4. VOLUMEN DE MÚSICA ── -->
                 <div class="settings-section">
                     <div class="settings-slider-header">
                         <span class="settings-label">
@@ -179,7 +216,7 @@ export default {
                     >
                 </div>
 
-                <!-- ── 4. VOLUMEN DE EFECTOS (SFX) ── -->
+                <!-- ── 5. VOLUMEN DE EFECTOS (SFX) ── -->
                 <div class="settings-section">
                     <div class="settings-slider-header">
                         <span class="settings-label">

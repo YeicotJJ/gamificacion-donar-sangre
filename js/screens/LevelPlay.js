@@ -7,6 +7,53 @@ import {
 import { resolveBackground } from '../utils/backgrounds.js';
 import { playSfx } from '../utils/audio.js';
 
+// ── Composable reutilizable de animación de texto ──────────────────────────
+function useTextAnimation() {
+    const displayed   = ref('');
+    const isAnimating = ref(false);
+    let   _timer      = null;
+
+    const start = (fullText) => {
+        clearTimeout(_timer);
+        const mode = G.textAnimation;
+        if (!mode || mode === 'none') {
+            displayed.value   = fullText;
+            isAnimating.value = false;
+            return;
+        }
+        if (mode === 'fade') {
+            displayed.value   = fullText;
+            isAnimating.value = true;
+            _timer = setTimeout(() => { isAnimating.value = false; }, 650);
+            return;
+        }
+        // typewriter
+        displayed.value   = '';
+        isAnimating.value = true;
+        let i = 0;
+        const type = () => {
+            if (i <= fullText.length) {
+                displayed.value = fullText.slice(0, i);
+                i++;
+                _timer = setTimeout(type, 22);
+            } else {
+                isAnimating.value = false;
+            }
+        };
+        type();
+    };
+
+    const skipToEnd = (fullText) => {
+        clearTimeout(_timer);
+        displayed.value   = fullText;
+        isAnimating.value = false;
+    };
+
+    const cleanup = () => clearTimeout(_timer);
+
+    return { displayed, isAnimating, start, skipToEnd, cleanup };
+}
+
 export default {
     setup() {
         const level = computed(() => LEVELS[G.currentLevel]);
@@ -16,6 +63,10 @@ export default {
         const answered      = ref(false);
         const selIdx        = ref(null);
         const selCorrect    = ref(false);
+        const panelHidden   = ref(false);
+
+        // ── Animación de texto ──
+        const { displayed, isAnimating, start, skipToEnd, cleanup } = useTextAnimation();
 
         // Detección reactiva de orientación vertical
         const isPortrait = ref(
@@ -36,12 +87,35 @@ export default {
             window.removeEventListener('orientationchange', onResize);
         });
 
+        const getCurrentStepText = () => {
+            const s = step.value;
+            if (!s) return '';
+            if (s.type === 'situation') return formatText(s.text || '');
+            if (s.type === 'conversation') {
+                const d = s.dialogues?.[dialogueIndex.value] || s.dialogues?.[0];
+                return formatText(d?.text || '');
+            }
+            return formatText(s.prompt || '');
+        };
+
+        // Animación inicial al montar
+        onMounted(() => {
+            start(getCurrentStepText());
+        });
+        onUnmounted(() => cleanup());
+
         // Reset estado al cambiar de paso
         watch(() => G.currentLevelStep, () => {
             dialogueIndex.value = 0;
             answered.value      = false;
             selIdx.value        = null;
             selCorrect.value    = false;
+            setTimeout(() => start(getCurrentStepText()), 30);
+        });
+
+        // Al cambiar de diálogo dentro de conversation, re-animar
+        watch(dialogueIndex, () => {
+            start(getCurrentStepText());
         });
 
         // Diálogo actual en caso de múltiples parlamentos
@@ -154,7 +228,8 @@ export default {
             situationText, activeSpeaker, activeAvatar, activeDialogueText,
             choiceSpeaker, choiceAvatar, choicePrompt, currentFeedback, formatText,
             answered, selIdx, selCorrect, isPortrait,
-            nextDialogue, selectOption, retryAndGoToMenu, advance, backToLevelSelect
+            nextDialogue, selectOption, retryAndGoToMenu, advance, backToLevelSelect,
+            displayed, isAnimating, panelHidden,
         };
     },
     template: `
@@ -174,18 +249,44 @@ export default {
             </div>
 
             <!-- ══ PANEL ROJO INFERIOR (ESTILO NOVELA VISUAL) ══ -->
-            <div class="vn-panel">
+            <div class="vn-panel" :class="{ 'vn-panel--hidden': panelHidden }">
+
+                <!-- Botón ojo para ocultar/mostrar el panel -->
+                <button
+                    class="vn-panel-eye-btn"
+                    @click="panelHidden = !panelHidden"
+                    :title="panelHidden ? 'Mostrar textos' : 'Ocultar textos y ver fondo'"
+                    :aria-label="panelHidden ? 'Mostrar textos' : 'Ocultar textos y ver fondo'"
+                >
+                    <!-- Icono ojo: para mostrar cuando está oculto -->
+                    <svg v-if="panelHidden" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <!-- Icono ojo tachado: para ocultar cuando está visible -->
+                    <svg v-else viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </button>
 
                 <!-- ── 1. LA SITUACIÓN (Fondo + Texto descriptivo) ── -->
-                <div v-if="step.type === 'situation'" class="vn-situation-box">
-                    <p class="vn-situation-text">{{ situationText }}</p>
+                <div v-if="step.type === 'situation'" class="vn-situation-box" v-show="!panelHidden">
+                    <p
+                        class="vn-situation-text"
+                        :class="{ 'vn-text--fade': G.textAnimation === 'fade' && isAnimating }"
+                    >
+                        {{ displayed }}<span v-if="G.textAnimation === 'typewriter' && isAnimating" class="vn-cursor">▌</span>
+                    </p>
                     <div class="vn-situation-actions">
-                        <button class="vn-btn-continue" @click="advance()">Continuar</button>
+                        <button class="vn-btn-continue" @click="advance()">
+                            Continuar
+                        </button>
                     </div>
                 </div>
 
                 <!-- ── 2. LA CONVERSACIÓN (Avatar + Diálogo + Botón Continuar) ── -->
-                <div v-else-if="step.type === 'conversation'" class="vn-dialogue-row">
+                <div v-else-if="step.type === 'conversation'" class="vn-dialogue-row" v-show="!panelHidden">
                     <div class="vn-avatar-col" v-if="currentDialogue">
                         <div class="vn-avatar-box">
                             <img
@@ -198,13 +299,20 @@ export default {
                     </div>
 
                     <div class="vn-dialogue-col" v-if="currentDialogue">
-                        <p class="vn-speech-text">{{ activeDialogueText }}</p>
-                        <button class="vn-btn-continue" @click="nextDialogue()">Continuar</button>
+                        <p
+                            class="vn-speech-text"
+                            :class="{ 'vn-text--fade': G.textAnimation === 'fade' && isAnimating }"
+                        >
+                            {{ displayed }}<span v-if="G.textAnimation === 'typewriter' && isAnimating" class="vn-cursor">▌</span>
+                        </p>
+                        <button class="vn-btn-continue" @click="nextDialogue()">
+                            Continuar
+                        </button>
                     </div>
                 </div>
 
                 <!-- ── 3. LA ELECCIÓN (Avatar con duda + Prompt + Botones Pills) ── -->
-                <div v-else-if="step.type === 'choice'" class="vn-dialogue-row">
+                <div v-else-if="step.type === 'choice'" class="vn-dialogue-row" v-show="!panelHidden">
                     <div class="vn-avatar-col">
                         <div class="vn-avatar-box vn-avatar-doubt-box">
                             <img
@@ -217,7 +325,12 @@ export default {
                     </div>
 
                     <div class="vn-dialogue-col">
-                        <p class="vn-speech-text vn-choice-prompt">{{ choicePrompt }}</p>
+                        <p
+                            class="vn-speech-text vn-choice-prompt"
+                            :class="{ 'vn-text--fade': G.textAnimation === 'fade' && isAnimating }"
+                        >
+                            {{ displayed }}<span v-if="G.textAnimation === 'typewriter' && isAnimating" class="vn-cursor">▌</span>
+                        </p>
 
                         <!-- Botones de selección antes de responder -->
                         <div v-if="!answered" class="vn-choice-options-row">

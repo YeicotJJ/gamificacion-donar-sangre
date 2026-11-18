@@ -25,8 +25,8 @@ export const LEVELS = [
                 type: 'situation',
                 badge: 'Situación',
                 // Opciones de fondo WebP (horizontal, vertical, chico, chica):
-                bg: './src/images/levels/bg_nivel1_situacion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_situacion_clean_v.webp',
+                bg: null,
+                bgVertical: null,
                 bgMale: './src/images/levels/bg_nivel1_situacion_chico.webp',
                 bgMaleVertical: './src/images/levels/bg_nivel1_situacion_chico_v.webp',
                 bgFemale: './src/images/levels/bg_nivel1_situacion_chica.webp',
@@ -36,12 +36,12 @@ export const LEVELS = [
             // Pantalla 2: La Conversación
             {
                 type: 'conversation',
-                bg: './src/images/levels/bg_nivel1_conversacion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_conversacion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_conversacion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_conversacion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_conversacion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_conversacion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel1_situacion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel1_situacion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel1_situacion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel1_situacion_chica_v.webp',
                 dialogues: [
                     {
                         speaker: 'Marcos',
@@ -64,8 +64,8 @@ export const LEVELS = [
             // Pantalla 3: La Elección
             {
                 type: 'choice',
-                bg: './src/images/levels/bg_nivel1_eleccion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_eleccion_clean_v.webp',
+                bg: null,
+                bgVertical: null,
                 bgMale: './src/images/levels/bg_nivel1_eleccion_chico.webp',
                 bgMaleVertical: './src/images/levels/bg_nivel1_eleccion_chico_v.webp',
                 bgFemale: './src/images/levels/bg_nivel1_eleccion_chica.webp',
@@ -107,27 +107,27 @@ export const LEVELS = [
             {
                 type: 'situation',
                 badge: 'Situación',
-                bg: './src/images/levels/bg_nivel1_situacion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_situacion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_situacion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_situacion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_situacion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_situacion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel2_situacion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel2_situacion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel2_situacion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel2_situacion_chica_v.webp',
                 text: 'Tras la emergencia médica de un familiar, {name} y su familia se reúnen con urgencia en la sala de espera del hospital. El médico de guardia les informa que necesitan dos unidades de reposición antes del mediodía. A pesar de que hay varios familiares jóvenes y sanos reunidos, el miedo, los mitos populares y la desinformación hacen que todos duden y comiencen a dar excusas para no poner el brazo.'
             },
             // Pantalla 2: La Conversación
             {
                 type: 'conversation',
-                bg: './src/images/levels/bg_nivel1_conversacion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_conversacion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_conversacion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_conversacion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_conversacion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_conversacion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel2_situacion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel2_situacion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel2_situacion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel2_situacion_chica_v.webp',
                 dialogues: [
                     {
                         speaker: 'Don Carlos',
-                        avatar: './src/images/levels/marcos_portrait_talk.webp',
+                        avatar: './src/images/levels/carlos_portrait_talk.webp',
                         text: 'Miren muchachos, y escúchame bien tú también, {name}... Yo quisiera ayudar, pero donar sangre te deja débil para siempre y te da una anemia severa. ¡Y ni se les ocurra donar a quienes tengan tatuajes o aretes, porque esa sangre queda prohibida de por vida!'
                     },
                     {
@@ -138,7 +138,7 @@ export const LEVELS = [
                     },
                     {
                         speaker: 'Don Carlos',
-                        avatar: './src/images/levels/marcos_portrait_doubt.webp',
+                        avatar: './src/images/levels/carlos_portrait_doubt.webp',
                         text: 'Vaya {name}, veo que estás muy bien {informado/informada}... Pero si queremos animar a la familia y no poner en riesgo la salud de nadie, ¿cuál es el requisito físico real que debemos verificar?'
                     }
                 ]
@@ -146,12 +146,12 @@ export const LEVELS = [
             // Pantalla 3: La Elección
             {
                 type: 'choice',
-                bg: './src/images/levels/bg_nivel1_eleccion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_eleccion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_eleccion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_eleccion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_eleccion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_eleccion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel2_eleccion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel2_eleccion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel2_eleccion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel2_eleccion_chica_v.webp',
                 isPlayer: true,
                 speaker: '{name}',
                 avatar: 'player',
@@ -189,23 +189,23 @@ export const LEVELS = [
             {
                 type: 'situation',
                 badge: 'Situación',
-                bg: './src/images/levels/bg_nivel1_situacion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_situacion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_situacion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_situacion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_situacion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_situacion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel3_situacion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel3_situacion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel3_situacion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel3_situacion_chica_v.webp',
                 text: 'Es medianoche frente a la puerta de emergencias. El banco de sangre del hospital no cuenta con stock disponible del grupo sanguíneo que el familiar de {name} necesita urgentemente y ningún familiar directo es compatible. Desesperados, {name} y {companion} salen a tomar aire a la vereda sin saber a quién recurrir, cuando una persona desconocida se les acerca entre las sombras ofreciendo una salida rápida.'
             },
             // Pantalla 2: La Conversación
             {
                 type: 'conversation',
-                bg: './src/images/levels/bg_nivel1_conversacion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_conversacion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_conversacion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_conversacion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_conversacion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_conversacion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel3_situacion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel3_situacion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel3_situacion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel3_situacion_chica_v.webp',
                 dialogues: [
                     {
                         speaker: '{companion}',
@@ -233,12 +233,12 @@ export const LEVELS = [
             // Pantalla 3: La Elección
             {
                 type: 'choice',
-                bg: './src/images/levels/bg_nivel1_eleccion_clean.webp',
-                bgVertical: './src/images/levels/bg_nivel1_eleccion_clean_v.webp',
-                bgMale: './src/images/levels/bg_nivel1_eleccion_chico.webp',
-                bgMaleVertical: './src/images/levels/bg_nivel1_eleccion_chico_v.webp',
-                bgFemale: './src/images/levels/bg_nivel1_eleccion_chica.webp',
-                bgFemaleVertical: './src/images/levels/bg_nivel1_eleccion_chica_v.webp',
+                bg: null,
+                bgVertical: null,
+                bgMale: './src/images/levels/bg_nivel3_eleccion_chico.webp',
+                bgMaleVertical: './src/images/levels/bg_nivel3_eleccion_chico_v.webp',
+                bgFemale: './src/images/levels/bg_nivel3_eleccion_chica.webp',
+                bgFemaleVertical: './src/images/levels/bg_nivel3_eleccion_chica_v.webp',
                 isPlayer: true,
                 speaker: '{name}',
                 avatar: 'player',

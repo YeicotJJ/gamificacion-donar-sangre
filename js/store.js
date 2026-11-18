@@ -44,6 +44,7 @@ export const G = reactive({
     sfxMuted:        savedSettings?.sfxMuted ?? false,
     orientationMode: savedSettings?.orientationMode ?? 'auto', // 'auto' | 'horizontal' | 'vertical'
     textSize:        savedSettings?.textSize ?? 3,             // 1 | 2 | 3 | 4 | 5 (predeterminado: 3 = Normal)
+    textAnimation:   savedSettings?.textAnimation ?? 'typewriter', // 'typewriter' | 'fade' | 'none'
     // Juicing
     shake: false,
     flash: null,
@@ -60,6 +61,7 @@ export function saveSettings() {
             sfxMuted: G.sfxMuted,
             orientationMode: G.orientationMode,
             textSize: G.textSize,
+            textAnimation: G.textAnimation,
         }));
     } catch (e) {
         // Ignorar si localStorage no está disponible
